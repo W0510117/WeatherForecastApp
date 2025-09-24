@@ -1,4 +1,5 @@
 package Models
 
 class Weather {
+
 }

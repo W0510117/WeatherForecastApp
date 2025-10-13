@@ -14,8 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.weatherforecast.models.Forecast
 import com.example.weatherforecast.ui.screens.CurrentWeatherScreen
-import com.example.weatherforecast.ui.screens.DailyForecastScreen
+import com.example.weatherforecast.ui.screens.ForecastListScreen
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
 
 class MainActivity : ComponentActivity() {
@@ -55,31 +56,33 @@ fun DisplayUI(mainViewModel: MainViewModel) {
                 containerColor = MaterialTheme.colorScheme.onPrimary,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             ) {
-                NavigationBar {
-                    // Current Weather tab
-                    NavigationBarItem(
-                        icon = { Icon(Icons.Filled.Home, contentDescription = "Current") },
-                        label = { Text("Current") },
-                        selected = selectedItem == "current_weather",
-                        onClick = {
-                            selectedItem = "current_weather"
-                            navController.navigate("current_weather") {
-                            }
-                        }
-                    )
 
-                    // Forecast tab
-                    NavigationBarItem(
-                        icon = { Icon(Icons.Filled.List, contentDescription = "Forecast") },
-                        label = { Text("Forecast") },
-                        selected = selectedItem == "daily_forecast",
-                        onClick = {
-                            selectedItem = "daily_forecast"
-                            navController.navigate("daily_forecast") {
-                            }
+                NavigationBarItem(
+                    icon = { Icon(Icons.Filled.Home, contentDescription = "Current") },
+                    label = { Text("Now") },
+                    selected = selectedItem == "current_weather",
+                    onClick = {
+                        selectedItem = "current_weather"
+                        navController.navigate("current_weather") {
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
                         }
-                    )
-                }
+                    }
+                )
+
+
+                NavigationBarItem(
+                    icon = { Icon(Icons.Filled.List, contentDescription = "Forecast") },
+                    label = { Text("Daily") },
+                    selected = selectedItem == "daily_forecast",
+                    onClick = {
+                        selectedItem = "daily_forecast"
+                        navController.navigate("daily_forecast") {
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
         }
     ) { innerPadding ->
@@ -92,8 +95,9 @@ fun DisplayUI(mainViewModel: MainViewModel) {
                 CurrentWeatherScreen(current = mainViewModel.weather.current)
             }
             composable("daily_forecast") {
-                DailyForecastScreen(forecastList = mainViewModel.weather.dailyForecast)
+                ForecastListScreen(forecasts = mainViewModel.weather.dailyForecast)
             }
         }
     }
 }
+

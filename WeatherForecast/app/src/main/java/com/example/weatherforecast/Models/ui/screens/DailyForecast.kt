@@ -1,4 +1,4 @@
-package com.example.weatherforecast.ui.screens
+package com.example.weatherforecast.Models.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.sp
 import com.example.weatherforecast.models.Forecast
 
 @Composable
-fun DailyForecastScreen(forecasts: List<Forecast>) {
+fun DailyForecast(forecasts: List<Forecast>) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier

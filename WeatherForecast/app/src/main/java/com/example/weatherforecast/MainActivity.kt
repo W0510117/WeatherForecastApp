@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.weatherforecast.Models.ui.screens.CurrentWeather
-import com.example.weatherforecast.Models.ui.screens.DailyForecast
+import com.example.weatherforecast.screens.CurrentWeather
+import com.example.weatherforecast.screens.DailyForecast
 import com.example.weatherforecast.theme.WeatherForecastTheme
 
 class MainActivity : ComponentActivity() {
@@ -43,9 +43,9 @@ fun DisplayUI(mainViewModel: MainViewModel) {
     val navController = rememberNavController()
     var selectedItem by remember { mutableStateOf("current_weather") }
 
-    // Collect the weather state
+    //collecting weather state from ViewModel
     val weatherState by mainViewModel.weather.collectAsState()
-    val weather = weatherState ?: return  // Skip showing loading
+    val weather = weatherState
 
     Scaffold(
         topBar = {
@@ -97,10 +97,13 @@ fun DisplayUI(mainViewModel: MainViewModel) {
             modifier = modifier
         ) {
             composable("current_weather") {
-                CurrentWeather(mainViewModel)  // Your current weather screen
+                CurrentWeather(mainViewModel)
             }
             composable("daily_forecast") {
-                DailyForecast(forecasts = weather.dailyForecast)  // Your daily forecast screen
+                //show DailyForecast
+                weather?.let { nonNullWeather ->
+                    DailyForecast(forecasts = nonNullWeather.dailyForecast)
+                }
             }
         }
     }

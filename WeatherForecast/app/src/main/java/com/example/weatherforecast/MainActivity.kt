@@ -1,23 +1,30 @@
 package com.example.weatherforecast
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.weatherforecast.models.ForecastDayWrapper
 import com.example.weatherforecast.screens.CurrentWeather
 import com.example.weatherforecast.screens.DailyForecast
 import com.example.weatherforecast.theme.WeatherForecastTheme
+import com.google.android.gms.location.LocationServices
 
 class MainActivity : ComponentActivity() {
 
@@ -25,13 +32,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
         mainViewModel = MainViewModel()
 
         setContent {
             WeatherForecastTheme {
-                DisplayUI(mainViewModel)
+                WeatherAppUI(mainViewModel)
             }
         }
     }
@@ -39,18 +44,45 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DisplayUI(mainViewModel: MainViewModel) {
+fun WeatherAppUI(mainViewModel: MainViewModel) {
+    val context = LocalContext.current
     val navController = rememberNavController()
     var selectedItem by remember { mutableStateOf("current_weather") }
 
-    //collecting weather state from ViewModel
+    // Observe weather state
     val weatherState by mainViewModel.weather.collectAsState()
-    val weather = weatherState
+
+    // Request location
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) fetchDeviceLocation(context, mainViewModel)
+        else mainViewModel.fetchWeather("Halifax") // fallback if no permission
+    }
+
+    // Launch permission
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            fetchDeviceLocation(context, mainViewModel)
+        }
+    }
+
+    //ForecastDay → ForecastDayWrapper for DailyForecast screen
+    val forecastWrapperList = weatherState?.forecast?.forecastday?.map { day ->
+        ForecastDayWrapper(date = day.date,
+            day = day
+        )
+    } ?: emptyList()
+
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Halifax, Nova Scotia") },
+                title = { Text(weatherState?.location?.name ?: "Loading...") },
                 colors = topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.onPrimary,
                     titleContentColor = MaterialTheme.colorScheme.primary
@@ -89,22 +121,35 @@ fun DisplayUI(mainViewModel: MainViewModel) {
             }
         }
     ) { innerPadding ->
-        val modifier = Modifier.padding(innerPadding)
-
         NavHost(
             navController = navController,
             startDestination = "current_weather",
-            modifier = modifier
+            modifier = Modifier.padding(innerPadding)
         ) {
             composable("current_weather") {
                 CurrentWeather(mainViewModel)
             }
             composable("daily_forecast") {
-                //show DailyForecast
-                weather?.let { nonNullWeather ->
-                    DailyForecast(forecasts = nonNullWeather.dailyForecast)
-                }
+                DailyForecast(forecasts = forecastWrapperList)
             }
         }
+    }
+}
+
+//location fetch
+fun fetchDeviceLocation(context: android.content.Context, mainViewModel: MainViewModel) {
+    val fusedClient = LocationServices.getFusedLocationProviderClient(context)
+    try {
+        fusedClient.lastLocation.addOnSuccessListener { location ->
+            val query = if (location != null) {
+                "${location.latitude},${location.longitude}"
+            } else {
+                "Halifax"
+            }
+            mainViewModel.fetchWeather(query)
+        }
+    } catch (e: SecurityException) {
+        e.printStackTrace()
+        mainViewModel.fetchWeather("Halifax")
     }
 }

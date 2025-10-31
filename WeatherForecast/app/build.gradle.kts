@@ -8,6 +8,11 @@ android {
     namespace = "com.example.weatherforecast"
     compileSdk = 36
 
+    buildFeatures {
+        compose = true
+        buildConfig = true  //enable BuildConfig generation
+    }
+
     defaultConfig {
         applicationId = "com.example.weatherforecast"
         minSdk = 26
@@ -16,6 +21,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // API Key
+        buildConfigField("String", "WEATHER_API_KEY", "\"ad3e62ec41f2484e95a175129251510\"")
     }
 
     buildTypes {
@@ -43,7 +51,11 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+// Retrofit GSON Converter
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

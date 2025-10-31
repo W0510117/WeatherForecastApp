@@ -7,45 +7,32 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.weatherforecast.models.Forecast
+import com.example.weatherforecast.models.ForecastDayWrapper
 
 @Composable
-fun DailyForecast(forecasts: List<Forecast>) {
+fun DailyForecast(forecasts: List<ForecastDayWrapper>) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        item {
-            Text(
-                text = "Daily Forecast",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-        }
-
-        items(forecasts) { forecast ->
+        items(forecasts) { wrapper ->
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = forecast.day, style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = forecast.emoji, fontSize = 48.sp)
+                    Text(text = wrapper.date, style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "High: ${forecast.hightemperature}°C  |  Low: ${forecast.lowtemperature}°C",
-                        style = MaterialTheme.typography.bodyMedium
+                        text = "Max: ${wrapper.day.maxtemp_c}°C, Min: ${wrapper.day.mintemp_c}°C"
                     )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(text = forecast.description, style = MaterialTheme.typography.bodySmall)
+                    Text(text = "Condition: ${wrapper.day.condition.text}")
+                    Text(text = wrapper.day.description)
                 }
             }
         }
     }
 }
+

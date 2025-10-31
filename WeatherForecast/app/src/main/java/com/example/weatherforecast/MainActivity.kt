@@ -72,9 +72,10 @@ fun WeatherAppUI(mainViewModel: MainViewModel) {
     }
 
     //ForecastDay → ForecastDayWrapper for DailyForecast screen
-    val forecastWrapperList = weatherState?.forecast?.forecastday?.map { day ->
-        ForecastDayWrapper(date = day.date,
-            day = day
+    val forecastWrappers = weatherState?.forecast?.forecastday?.map {
+        ForecastDayWrapper(
+            date = it.date,
+            dayInfo = it.day
         )
     } ?: emptyList()
 
@@ -130,7 +131,7 @@ fun WeatherAppUI(mainViewModel: MainViewModel) {
                 CurrentWeather(mainViewModel)
             }
             composable("daily_forecast") {
-                DailyForecast(forecasts = forecastWrapperList)
+                DailyForecast(forecasts = forecastWrappers)
             }
         }
     }

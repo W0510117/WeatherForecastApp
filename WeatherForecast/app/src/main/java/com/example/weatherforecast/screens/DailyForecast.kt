@@ -26,10 +26,10 @@ fun DailyForecast(forecasts: List<ForecastDayWrapper>) {
                     Text(text = wrapper.date, style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Max: ${wrapper.day.maxtemp_c}°C, Min: ${wrapper.day.mintemp_c}°C"
+                        text = "High: ${wrapper.dayInfo.maxtemp_c}°C | Low: ${wrapper.dayInfo.mintemp_c}°C"
                     )
-                    Text(text = "Condition: ${wrapper.day.condition.text}")
-                    Text(text = wrapper.day.description)
+                    Text(text = "Condition: ${wrapper.dayInfo.condition.text}")
+                    Text(text = wrapper.dayInfo.condition.text)
                 }
             }
         }

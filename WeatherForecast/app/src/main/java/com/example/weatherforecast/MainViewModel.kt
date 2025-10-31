@@ -32,15 +32,6 @@ class MainViewModel : ViewModel() {
             try {
                 val response = weatherService.getForecast(cityOrLatLon = cityOrLatLon)
                 _weather.value = response
-
-                // Transform forecast into wrappers
-                val wrappers = response.forecast.forecastday.map { day ->
-                    ForecastDayWrapper(
-                        date = day.date,
-                        day = day
-                    )
-                }
-                _forecastWrappers.value = wrappers
             } catch (e: Exception) {
                 e.printStackTrace()
             }

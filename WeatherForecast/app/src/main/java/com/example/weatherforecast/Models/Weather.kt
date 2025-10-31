@@ -14,23 +14,26 @@ data class Location(
     val localtime: String
 )
 
-//Updated
-data class Current(
-    @SerializedName("temp_c") val tempC: Double,
-    @SerializedName("condition") val condition: Condition,
-    @SerializedName("humidity") val humidity: Int,
-    @SerializedName("wind_kph") val windKph: Double,
-    @SerializedName("gust_kph") val gustKph: Double,
-    @SerializedName("feelslike_c") val feelsLikeC: Double
-)
-
 //New class to get condition
 data class Condition(
     val text: String,
-    val icon: String
+    val icon: String,
+    val code: Int
 )
 
-
+//Updated
+data class Current(
+    @SerializedName("last_updated_epoch") val lastUpdatedEpoch: Long,
+    @SerializedName("last_updated") val lastUpdated: String,
+    @SerializedName("temp_c") val tempC: Double,
+    @SerializedName("temp_f") val tempF: Double,
+    @SerializedName("is_day") val isDay: Int,
+    val condition: Condition,
+    @SerializedName("wind_kph") val windKph: Double,
+    @SerializedName("gust_kph") val gustKph: Double,
+    val humidity: Int,
+    @SerializedName("feelslike_c") val feelsLikeC: Double
+)
 
 //Updated
 data class Weather(
@@ -44,19 +47,29 @@ data class Forecast(
     val forecastday: List<ForecastDay>
 )
 
-// Wrapper
-data class ForecastDayWrapper(
-    val date: String,
-    val day: ForecastDay
-)
-
 //Updated
 data class ForecastDay(
-    val date: String, // <-- this is the date string
+    val date: String,
+    val date_epoch: Long,
+    val day: DayInfo
+)
+
+data class DayInfo(
     val maxtemp_c: Double,
     val mintemp_c: Double,
     val avgtemp_c: Double,
-    val maxwind_kph: Double,
+    @SerializedName("maxwind_kph") val maxWindKph: Double,
+    val totalprecip_mm: Double,
+    val avghumidity: Double,
+    val daily_will_it_rain: Int,
+    val daily_chance_of_rain: Int,
+    val daily_will_it_snow: Int,
+    val daily_chance_of_snow: Int,
     val condition: Condition,
-    val description: String
+    val uv: Double
+)
+
+data class ForecastDayWrapper(
+    val date: String,
+    val dayInfo: DayInfo
 )

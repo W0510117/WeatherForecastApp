@@ -21,7 +21,7 @@ fun CurrentWeather(mainViewModel: MainViewModel) {
         verticalArrangement = Arrangement.Center
     ) {
         if (weather != null) {
-            Text(text = "Location: ${weather.location.name}", style = MaterialTheme.typography.headlineSmall)
+            Text(text = " ${weather.location.name}", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "Temperature: ${weather.current.tempC}°C")
             Text(text = "Condition: ${weather.current.condition.text}")

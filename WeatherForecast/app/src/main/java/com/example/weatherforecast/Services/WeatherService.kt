@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface WeatherService {
 
-    @GET("v1/forecast.json")
+    @GET("forecast.json")
     suspend fun getForecast(
         @Query("key") apiKey: String = BuildConfig.WEATHER_API_KEY,
         @Query("q") cityOrLatLon: String,

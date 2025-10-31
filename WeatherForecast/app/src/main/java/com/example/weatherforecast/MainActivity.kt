@@ -34,6 +34,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         mainViewModel = MainViewModel()
 
+        mainViewModel.fetchWeather("Halifax")
+
         setContent {
             WeatherForecastTheme {
                 WeatherAppUI(mainViewModel)
@@ -60,16 +62,12 @@ fun WeatherAppUI(mainViewModel: MainViewModel) {
         else mainViewModel.fetchWeather("Halifax") // fallback if no permission
     }
 
-    // Launch permission
+    // Launch
     LaunchedEffect(Unit) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        } else {
-            fetchDeviceLocation(context, mainViewModel)
-        }
+        // Always fetch Halifax weather
+        mainViewModel.fetchWeather("Halifax")
     }
+
 
     //ForecastDay → ForecastDayWrapper for DailyForecast screen
     val forecastWrappers = weatherState?.forecast?.forecastday?.map {

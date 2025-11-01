@@ -51,6 +51,8 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    //permissions
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.accompanist:accompanist-permissions:0.34.0")
     // Retrofit

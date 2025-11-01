@@ -81,7 +81,7 @@ fun WeatherAppUI(mainViewModel: MainViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(weatherState?.location?.name ?: "Loading...") },
+                title = { Text(weatherState?.location?.name ?: "Location?") },
                 colors = topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.onPrimary,
                     titleContentColor = MaterialTheme.colorScheme.primary

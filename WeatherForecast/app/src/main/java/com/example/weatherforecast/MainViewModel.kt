@@ -16,10 +16,6 @@ class MainViewModel : ViewModel() {
     private val _weather = MutableStateFlow<Weather?>(null)
     val weather = _weather.asStateFlow()
 
-    // ForecastDayWrapper for the UI
-    private val _forecastWrappers = MutableStateFlow<List<ForecastDayWrapper>>(emptyList())
-    val forecastWrappers = _forecastWrappers.asStateFlow()
-
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://api.weatherapi.com/v1/")
         .addConverterFactory(GsonConverterFactory.create())

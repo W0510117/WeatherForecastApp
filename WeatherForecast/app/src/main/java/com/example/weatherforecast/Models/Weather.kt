@@ -32,7 +32,7 @@ data class Current(
     @SerializedName("wind_kph") val windKph: Double,
     @SerializedName("gust_kph") val gustKph: Double,
     val humidity: Int,
-    @SerializedName("feelslike_c") val feelsLikeC: Double
+    @SerializedName("feelslike_c") val feelsLikeC: Double,
 )
 
 //Updated
